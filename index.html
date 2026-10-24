@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Chat</title>
+</head>
+<body>
+    <div>
+        <h1 align="left" style="color: rgb(0, 219, 11);">Web Chat</h1>
+        <b>your id: <span id="ws-id"></span></b>
+        <div>
+            <ul id="messages">
+                
+            </ul>
+            <form action="" onsubmit="sendmessage(event)" style="width: 1120px;height: 100px;">
+                <input type="text" id="messageText" placeholder="Enter your message" autoComplete="off"/>
+                <button >Submit</button>
+            </form>
+            
+        </div>
+    </div>
+    <script>
+        var client_id = Date.now()
+        document.querySelector("#ws-id").textContent = client_id;
+        var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
+        ws.onmessage = function(event) {
+        var messages = document.getElementById("messages");
+        var message = document.createElement("li");
+        var content = document.createTextNode(event.data);
+        message.appendChild(content);
+        messages.appendChild(message);
+        };
+        function sendmessage(event){
+            var input = document.getElementById("messageText")
+            ws.send(input.value)
+            input.value = ''
+            event.preventDefault()
+        }
+    </script>
+</body>
+</html>
