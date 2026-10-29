@@ -5,12 +5,18 @@ app=FastAPI()
 
 class connectionManager:
     def __init__(self):
-        self.active_connections:list[WebSocket]=[]
+        self.room:dict[str,list[WebSocket]]={}
         
-    async def connect(self,websocket:WebSocket):
+    async def connect(self,websocket:WebSocket,room_id: str):
         await websocket.accept()
-        self.active_connections.append(websocket)
-    def disconnect(self,websocket=WebSocket):
+        if room_id in self.room:
+            self.room[room_id].append(websocket)
+        else:
+            self.room[room_id]=[]
+            self.room[room_id].append(websocket)
+            
+    
+    def disconnect(self,websocket:WebSocket):
         self.active_connections.remove(websocket)
         
     async def send_personal_messages(self,message: str,websocket:WebSocket):
@@ -26,7 +32,7 @@ manager=connectionManager()
 def show_main():
     return FileResponse("index.html")
 
-@app.websocket("/ws/{client_id}")
+@app.websocket("/ws/{room_id}/{client_id}")
 async def websocket_endpoint(websocket: WebSocket,client_id: int):
     await manager.connect(websocket)
     try:
