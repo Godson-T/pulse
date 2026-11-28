@@ -21,6 +21,7 @@ class connectionManager:
         if self.room[room_id] == []:
             self.room.pop(room_id)
 
+        
     async def broadcast(self, message: str, room_id: str):
         for connection in self.room[room_id]:
             await connection.send_text(message)

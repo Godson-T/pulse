@@ -1,6 +1,12 @@
-__pycache__/
-*.py[cod]
+# Virtual environments
+Notication_System/
 .venv/
 venv/
-.env
+
+# Python cache
 main.cpython-312.pyc
+__pycache__/
+*.pyc
+
+# Environment secrets
+.env
